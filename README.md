@@ -1,6 +1,4 @@
-
 Advanced Scala with Cats
-
 ---
 
 This repository is my solution of
