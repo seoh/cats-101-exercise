@@ -5,6 +5,12 @@ object WriterFactorial extends App {
 
   import cats._
   import cats.data.Writer
+  import cats.syntax.applicative._
+  import cats.syntax.writer._
+
+  import cats.instances.int._
+  import cats.instances.vector._
+
   import scala.concurrent._
   import scala.concurrent.ExecutionContext.Implicits.global
   import scala.concurrent.duration._
@@ -14,31 +20,30 @@ object WriterFactorial extends App {
 
     cause: https://github.com/lihaoyi/Ammonite/issues/534
   */
+  //  // doesnt work
   //  interp configureCompiler { c =>
   //    c.settings.Ydelambdafy.value = "inline"
   //  }
 
-  // type Logged[A] = Writer[Vector[String], A]
+  type Logged[A] = Writer[Vector[String], A]
 
   def slowly[A](body: => A): A =
     try body
     finally Thread.sleep(1)
 
   def factorial(n: Int): Int = {
-    val ans = slowly {
-      if (n == 0) 1
-      else n * factorial(n - 1)
+    def f(i: Int): Logged[Int] = {
+      for {
+        ans <- if(i == 0) 1.pure[Logged]
+               else slowly { f(i - 1).map(_ * i) }
+        _   <- Vector(s"$i $ans").tell 
+      } yield ans
     }
 
-    println(s"fact $n $ans")
-    ans
+    val (logs, result) = f(n).run
+    logs.foreach(println)
+    result
   }
 
-  val f = Future.sequence(Vector(
-    Future(factorial(3)),
-    Future(factorial(3))
-  ))
-
-  // Await.result(f, Duration.Inf)
-  Await.result(f, 10.seconds)
+  factorial(10)
 }
