@@ -16,7 +16,8 @@ object WriterFactorial extends App {
   import scala.concurrent.duration._
 
   /*
-    Error occured like this `java.lang.NoClassDefFoundError: Could not initialize class ammonite.$file.ch04.4$u002E6$u002E3$u002Ewriter$u002Efactorial$`
+    Error occured like this 
+    `java.lang.NoClassDefFoundError: Could not initialize class ammonite.$file.ch04$writer$factorial$`
 
     cause: https://github.com/lihaoyi/Ammonite/issues/534
   */
