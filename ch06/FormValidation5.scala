@@ -33,12 +33,10 @@ object FormValidation5 extends App {
 
 
   def nonBlank(str: String): ErrorOn[String] =
-    if(str.isEmpty) List("String must be non-empty.").asLeft
-    else str.asRight
+    str.asRight.ensure(List("String must be non-empty."))(_.nonEmpty)
   
   def nonNegative(num: Int): ErrorOn[Int] =
-    if(num < 0) List(s"$num must be positive.").asLeft
-    else num.asRight
+    num.asRight.ensure(List(s"$num must be positive."))(_ >= 0)
 
 
   def readName(form: FormData): ErrorOn[String] =
@@ -56,11 +54,12 @@ object FormValidation5 extends App {
 
   def readUser(form: FormData): AllErrorsOr[User] =
     (
-      Validated.fromEither(readName(form)) |@| 
-      Validated.fromEither(readAge(form))
+      readName(form).toValidated |@| 
+      readAge(form).toValidated
     ).map(User.apply)
   
   
   println(readUser(Map("name" -> "Name", "age" -> "1")))
-  println(readUser(Map.empty))
+  println(readUser(Map("name" -> "", "age" -> "-1")))
+  println(readUser(Map("name" -> "Name", "age" -> "age")))
 }
