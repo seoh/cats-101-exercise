@@ -35,5 +35,12 @@ object PostOrderCalculator2 extends App {
       a flatMap (_ => evalOne(b))
     }
 
+  // def evalAll(input: List[String]): CalcState[Int] = State[List[Int], Int] { stack =>
+  //   val s = input.foldLeft(stack) { (stack, sym) =>
+  //     evalOne(sym).runS(stack).value
+  //   }
+  //   (s, s.head)
+  // }
+
   println(evalAll(List("1", "2", "+", "3", "*")).run(Nil).value)
 }
