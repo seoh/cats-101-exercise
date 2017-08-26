@@ -2,7 +2,8 @@
 
 name := "cats-101-exercise"
 version := "0.0.1"
-scalaVersion in Global := "2.12.2"
+scalaVersion in Global := "2.12.3"
+
 libraryDependencies in Global ++= Seq(
   "org.typelevel" %% "cats" % "0.9.0"
 )
